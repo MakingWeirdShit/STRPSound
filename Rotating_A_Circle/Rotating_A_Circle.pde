@@ -4,6 +4,7 @@ import processing.sound.*;
 int amountOfLetters = 16;
 float radius = 200;
 float originalAngle = 0;
+float originalNegativeAngle = 0;
 float angleStep = 360 / amountOfLetters;
 int amountOfCircles = 9;
 FFT fft;
@@ -66,14 +67,14 @@ void draw() {
       if (i % 2 == 0) {
         drawShapesInCircle(i, greenStar);
       } else {
-        drawShapesInCircle(i, purpleStar);
+        drawShapesInCircleOpposite(i, purpleStar);
       }
     } else {
 
       if (i % 2 == 0) {
         drawShapesInCircle(i, purpleStar);
       } else {
-        drawShapesInCircle(i, greenStar);
+        drawShapesInCircleOpposite(i, greenStar);
       }
     }
 
@@ -95,9 +96,11 @@ void draw() {
   purpleStar.scale(1/newScale);
   if (ampValue > 0.3) {
     originalAngle+= map(ampValue, 0.3, 1, 1, 20);
+    originalNegativeAngle -= map(ampValue, 0.3, 1, 1, 20);
     // println(ampValue);
   } else {
     originalAngle += 0.05;
+    originalNegativeAngle -= 0.05;
   }
   
   detectFlip();
@@ -115,6 +118,20 @@ void detectFlip(){
 void drawShapesInCircle(int inputI, PShape sheep) {
 
   for (float angle = originalAngle; angle < originalAngle + 360; angle+= 360/ (inputI * 6)) {
+    float x = cos(radians(angle)) * (radius * (0.6 * inputI));
+
+    float y = sin(radians(angle)) * (radius * (0.6 * inputI));
+    pushMatrix();
+    translate(x, y);
+    //rotate(angle / 60);
+    shape(sheep, 0, 0);
+    popMatrix();
+  }
+}
+
+void drawShapesInCircleOpposite(int inputI, PShape sheep) {
+
+  for (float angle = originalNegativeAngle; angle < originalAngle + 360; angle+= 360/ (inputI * 6)) {
     float x = cos(radians(angle)) * (radius * (0.6 * inputI));
 
     float y = sin(radians(angle)) * (radius * (0.6 * inputI));
